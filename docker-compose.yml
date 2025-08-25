@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      args:
+        user: laravel
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: payment-management-api
+    container_name: payment-api-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - payment-network
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:alpine
+    container_name: payment-api-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - payment-network
+
+  db:
+    image: mysql:8.0
+    container_name: payment-api-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: payment_management
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_PASSWORD: secret
+      MYSQL_USER: laravel
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - payment-network
+
+  redis:
+    image: redis:alpine
+    container_name: payment-api-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - payment-network
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  payment-network:
+    driver: bridge
