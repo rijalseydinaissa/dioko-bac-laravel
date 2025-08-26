@@ -147,6 +147,7 @@ L'API sera accessible sur `http://localhost:8000`
 - `POST /api/payments` - Créer un paiement
 - `GET /api/payments/{id}` - Détails d'un paiement
 - `PATCH /api/payments/{id}/cancel` - Annuler un paiement
+- `PATCH /api/payments/{id}/approve` - valider un paiement
 - `PATCH /api/payments/{id}/retry` - Relancer un paiement échoué
 
 ### Fichiers

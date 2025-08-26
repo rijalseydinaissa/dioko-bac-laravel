@@ -20,34 +20,30 @@ class PaymentService
     public function createPayment(User $user, array $paymentData, ?UploadedFile $attachment = null): Payment
     {
         return DB::transaction(function () use ($user, $paymentData, $attachment) {
-            // Vérifier le solde disponible
             if (!$user->hasEnoughBalance($paymentData['amount'])) {
                 throw new \Exception('Solde insuffisant pour effectuer ce paiement');
             }
 
-            // Gérer l'upload du fichier
             $attachmentPath = null;
             $attachmentType = null;
-            
+
             if ($attachment) {
                 $attachmentPath = $attachment->store('payments', 'public');
                 $attachmentType = $attachment->getClientOriginalExtension();
             }
 
-            // Créer le paiement
-            $payment = Payment::create([
+            return Payment::create([
                 'user_id' => $user->id,
                 'payment_type_id' => $paymentData['payment_type_id'],
                 'description' => $paymentData['description'],
                 'amount' => $paymentData['amount'],
-                'status' => 'pending',
+                'status' => 'pending', // <-- statut initial
                 'attachment_path' => $attachmentPath,
                 'attachment_type' => $attachmentType,
             ]);
-
-            return $payment;
         });
     }
+
 
     public function processPayment(Payment $payment): bool
     {

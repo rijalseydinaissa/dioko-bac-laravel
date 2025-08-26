@@ -50,7 +50,7 @@ class PaymentController extends Controller
             );
 
             // Traiter le paiement immédiatement
-            $this->paymentService->processPayment($payment);
+            //$this->paymentService->processPayment($payment);
 
             return $this->success(
                 new PaymentResource($payment->fresh('paymentType')),
@@ -104,6 +104,28 @@ class PaymentController extends Controller
 
         } catch (\Exception $e) {
             return $this->serverError('Erreur lors de l\'annulation du paiement');
+        }
+    }
+    public function approve(Payment $payment)
+    {
+        try {
+            if ($payment->user_id !== auth()->id()) {
+                return $this->forbidden('Accès interdit à ce paiement');
+            }
+
+            if (!$payment->isPending()) {
+                return $this->error('Seuls les paiements en attente peuvent être validés');
+            }
+
+            $this->paymentService->processPayment($payment);
+
+            return $this->success(
+                new PaymentResource($payment->fresh('paymentType')),
+                'Paiement validé avec succès'
+            );
+
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
         }
     }
 

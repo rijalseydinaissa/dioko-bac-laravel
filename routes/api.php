@@ -54,6 +54,7 @@ Route::middleware('jwt.auth')->group(function () {
         Route::post('/', [PaymentController::class, 'store']);
         Route::get('{payment}', [PaymentController::class, 'show']);
         Route::patch('{payment}/cancel', [PaymentController::class, 'cancel']);
+        Route::patch('{payment}/approve', [PaymentController::class, 'approve']);
         Route::patch('{payment}/retry', [PaymentController::class, 'retry']);
     });
 
