@@ -36,8 +36,16 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer run-script post-autoload-dump
 # Set permissions
 RUN chmod -R 755 storage bootstrap/cache
 
+# Cache configuration for production (optimisation)
+RUN php artisan config:cache || true
+RUN php artisan route:cache || true
+
+# Create startup script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Expose port
 EXPOSE 8000
 
-# Start command
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Use startup script instead of direct artisan serve
+CMD ["/usr/local/bin/start.sh"]
