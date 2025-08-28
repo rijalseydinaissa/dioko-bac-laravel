@@ -20,9 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        'https://dioko-front-web-build.onrender.com',
-        'http://localhost:*', 
-        '*',
+    'https://dioko-front-web-build.onrender.com',
+    'http://localhost:*',
     ],
 
 
