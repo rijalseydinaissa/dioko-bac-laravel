@@ -73,6 +73,14 @@ else
     php artisan migrate:status 2>&1 || echo "⚠️ Cannot determine migration status"
 fi
 
+# Seeders spécifiques
+echo "🌱 Running specific seeders..."
+if php artisan db:seed --class=PaymentTypeSeeder --force 2>&1; then
+    echo "✅ PaymentTypeSeeder completed successfully"
+else
+    echo "⚠️ PaymentTypeSeeder failed or data already exists"
+fi
+
 # Optimisations
 echo "⚡ Optimizing Laravel..."
 php artisan config:cache
