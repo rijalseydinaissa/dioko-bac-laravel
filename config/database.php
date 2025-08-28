@@ -65,6 +65,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
@@ -75,6 +76,20 @@ return [
             'prefix_indexes' => true,
             'schema' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            
+            // AJOUT CRUCIAL pour Render PostgreSQL
+            'options' => [
+                PDO::ATTR_TIMEOUT => 30,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                // Force SSL pour connexions externes
+                PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
+            ],
+            
+            // Configuration SSL explicite
+            'sslcert' => env('DB_SSLCERT'),
+            'sslkey' => env('DB_SSLKEY'),
+            'sslrootcert' => env('DB_SSLROOTCERT'),
         ],
 
         'sqlsrv' => [
